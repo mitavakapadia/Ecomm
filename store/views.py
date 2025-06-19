@@ -5,5 +5,5 @@ from django.views import View
 
 # Create your views here.
 
-def home(request):
-    return render(request, "store/index.html")
+# def home(request):
+#     return render(request, "store/index.html")

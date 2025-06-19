@@ -20,11 +20,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
+import product.views
 import accounts.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include("accounts.urls")),
+    path('', product.views.home),
+    path('products/', include("product.urls")),
+    
     # path('login/', accounts.views.login_page, name="login"),
     # path("signup/", accounts.views.sign_up, name="signup")
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
