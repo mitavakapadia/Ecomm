@@ -5,6 +5,7 @@ from django.db import models
 class Category(models.Model):
     name = models.CharField(max_length=100, db_index=True)
     slug = models.SlugField(unique=True)
+    discount = models.IntegerField(default=10)
 
     class Meta:
         ordering = ("name",)
@@ -31,9 +32,10 @@ class Product(models.Model):
     review = models.CharField(max_length=300)
     available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    stock = models.IntegerField(default=50)
 
     class Meta:
-        ordering = ("prod_name",)
+        ordering = ("-created_at",)
         indexes = [
             models.Index(fields=["id", "slug"], name="id_slug_index")
         ]

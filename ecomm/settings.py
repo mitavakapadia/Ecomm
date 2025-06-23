@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'store',
     'accounts',
     'product',
+    'cart'
 ]
 
 MIDDLEWARE = [
@@ -78,10 +79,21 @@ WSGI_APPLICATION = 'ecomm.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ecomm_db',
+        'USER': 'root',
+        'PASSWORD': 'Root@123',
+        'HOST':'localhost',
+        'PORT':'3306',
     }
 }
 
@@ -145,3 +157,5 @@ EMAIL_HOST_PASSWORD = "vgec hlot swhx upzi"
 
 # Login Redirect
 LOGIN_REDIRECT_URL = "/"
+
+CART_SESSION_ID = 'cart'
