@@ -159,3 +159,5 @@ EMAIL_HOST_PASSWORD = "vgec hlot swhx upzi"
 LOGIN_REDIRECT_URL = "/"
 
 CART_SESSION_ID = 'cart'
+
+AUTH_USER_MODEL = "accounts.Customer"

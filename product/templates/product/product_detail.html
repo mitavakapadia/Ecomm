@@ -20,6 +20,7 @@
 
 <!-- Font awesome 5 -->
 <link href="{% static 'product/fonts/all.min.css' %}" type="text/css" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
 <!-- custom style -->
 <link href="{% static 'product/ui.css' %}" rel="stylesheet" type="text/css"/>
@@ -116,8 +117,8 @@ $(document).ready(function() {
 					<div class="widget-header">
 						<small class="title text-muted">Welcome guest!</small>
 						<div> 
-							<a href="./signin.html">Sign in</a> <span class="dark-transp"> | </span>
-							<a href="./register.html"> Register</a>
+							<a href="{% url 'accounts:login' %}">Sign in</a> <span class="dark-transp"> | </span>
+							<a href="{% url 'accounts:signup' %}"> Register</a>
 						</div>
 					</div>
 					<a href="product/cart.html" class="widget-header pl-3 ml-3">
@@ -199,7 +200,7 @@ $(document).ready(function() {
 		</div>
 	</div> <!-- row.// -->
 	<hr>
-	<form action="{% url 'cart:cart_add' product.id %}" method="post">
+	<form action="{% url 'cart:cart-add' product.id %}" method="post">
 				{{ cart_product_form }}
 				{% csrf_token %}
 				<input type="submit" class="btn  btn-primary" value="Add to Cart">
@@ -228,7 +229,7 @@ $(document).ready(function() {
 
 	<article class="box mb-3">
 		<div class="icontext w-100">
-			<img src="./images/avatars/avatar1.jpg" class="img-xs icon rounded-circle">
+			<img src="" class="img-xs icon rounded-circle">
 			<div class="text">
 				<span class="date text-muted float-md-right">24.04.2020 </span>  
 				<h6 class="mb-1">Mike John </h6>

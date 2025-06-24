@@ -1,49 +1,49 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
-# from django.contrib.auth.hashers import make_password
-
-# user.password = make_password('password')
-
 from . import forms
 from .forms import RegistrationForm, LoginForm
 from .models import Customer
+
 # Create your views here.
+
 
 def sign_up(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect("signup")
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data["password1"])
+            user.save()
+            return redirect("accounts:login")
         else:
-            print("else")
-            form = RegistrationForm()
-        return render(request, "accounts/signup.html", {"form":form})
+            print(form.errors)
     else:
-        return render(request, "accounts/signup.html")
+        form = RegistrationForm()
     
-def login_page(request):
-    # form = forms.LoginForm()
-    message = ""
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
+    context = {"form": form}
+    return render(request, "accounts/register.html", context)
 
+def login_page(request):
+    if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            # email = request.POST.get("email")
-            # password = request.POST.get("password")
-            user = authenticate(
-                request,
-                username= email,
-                password = password
-            )
-            if user is not None:
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=email, password=password)
+
+            if user:
                 login(request, user)
-                message = f"Hello {user.email}! You have logged in successfully!"
-                return render(request, "accounts/login.html", {"message":message})
+                return redirect("home")
             else:
-                message = "Login failed!"
-    return render(request, "accounts/login.html", {"form":form, "message":message})
+                form.add_error(None, "Invalid email or password")
+    else:
+        form = LoginForm()
+
+    return render(request, "accounts/signin.html", {"form": form})
+
+        
+def logout_page(request):
+    logout(request)
+    return redirect("/")

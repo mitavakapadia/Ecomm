@@ -141,7 +141,7 @@ $(document).ready(function() {
   {% with total_items=cart|length %}
     {% if total_items > 0 %}
       Your cart:
-      <a href="{% url 'cart:cart_detail' %}">
+      <a href="{% url 'cart:cart-detail' %}">
         {{ total_items }} item{{ total_items|pluralize }},
         ${{ cart.get_total_price }}
       </a>
@@ -177,12 +177,6 @@ $(document).ready(function() {
 		</figure>
 	</td>
 	<td> 
-		<form action="{% url 'cart:cart_add' product.id %}" method="post">
-                {{ item.update_quantity_form.quantity }}
-                {{ item.update_quantity_form.override }}
-                <input type="submit" value="Update">
-                {% csrf_token %}
-        </form>
 		<!-- col.// -->
 					<div class="col"> 
 						<div class="input-group input-spinner">
