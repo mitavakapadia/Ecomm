@@ -149,11 +149,17 @@ MEDIA_URL = "/files/"
 
 # For Email Configuration
 
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMIAL_HOST = "smtp.gmail.com"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "mitava.kapadia@ecosmob.com"
-EMAIL_HOST_PASSWORD = "vgec hlot swhx upzi"
+EMAIL_HOST_PASSWORD = "vgechlotswhxupzi"
+ACCOUNT_EMAIL_VERIFICATION = "none"
+EMAIL_FROM = 'mitava.kapadia@ecosmob.com'
+
+PASSWORD_RESET_TIMEOUT = 900 #15 min
 
 # Login Redirect
 LOGIN_REDIRECT_URL = "/"
