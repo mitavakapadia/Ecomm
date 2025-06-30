@@ -1,0 +1,25 @@
+{% extends "home.html" %}
+{% load static %}
+
+{% block header %}
+
+<link rel="stylesheet" href="{% static 'accounts/edit_profile.css' %}">
+
+{% endblock header %}
+
+{% block navbar %}{% endblock navbar %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-form-card">
+        <h2>Edit Your Profile</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer %}{% endblock footer %}

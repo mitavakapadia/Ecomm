@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+from django.utils import timezone
 # Create your models here.
 
 class CustomerManager(BaseUserManager):
@@ -22,8 +23,10 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=10)
-    password = models.CharField(max_length=128)
     address = models.TextField(max_length=250)
+    is_active = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(default=timezone.now)
 
     objects = CustomerManager() 
 

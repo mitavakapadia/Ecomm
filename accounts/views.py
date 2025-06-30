@@ -13,7 +13,7 @@ from .tokens import account_activation_token
 
 from django.contrib.auth.forms import AuthenticationForm
 from . import forms
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, ProfileForm
 from .models import Customer
 
 # Create your views here.
@@ -26,22 +26,28 @@ def register(request):
             user.set_password(form.cleaned_data["password1"])
             user.is_active = False
             user.save()
+
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = account_activation_token.make_token(user)
+
+            print("Registering user with:")
+            print("UID:", uid)
+            print("Token:", token)
+            print("user.is_active:", user.is_active)
+
             current_site_info = get_current_site(request)
+            
             mail_subject = "Activate your GreatKart Account"
             message = render_to_string("accounts/activate_account.html", {
                 "user": user,
                 "domain": current_site_info.domain,
-                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                "token": account_activation_token.make_token(user),
+                "uid": uid,
+                "token": token,
             })
-            to_email = form.cleaned_data.get("email")
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
+            # to_email = form.cleaned_data.get("email")
+            email = EmailMessage(mail_subject, message, to=[user.email])
             email.send()
             return HttpResponse("Please proceed confirm your email address to complete the registration")
-            # activateEmail(request, user, form.cleaned_data.get('email'))
-            # return redirect("accounts:login")
         else:
             print(form.errors)
     else:
@@ -54,52 +60,25 @@ def activate(request, uidb64, token):
     User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = Customer.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-        return HttpResponse("Thank you for your email confirmation. Now you can login your account!")
-    else:
+
+    if user is not None:
+        is_valid_token = account_activation_token.check_token(user, token)
         print("Decoded UID:", uid)
-        print("Token valid:", account_activation_token.check_token(user, token))
+        print("Token valid:", is_valid_token)
         print("User is:", user)
-        return HttpResponse("Activation link is invalid")
-    # return redirect('homepage')
 
-# def activateEmail(request, user, to_email):
-#     mail_subject = "Activate your GreatKart Account"
-#     message = render_to_string("accounts/activate_account.html", {
-#         "user": user.email,
-#         "domain": get_current_site(request).domain,
-#         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-#         "token": account_activation_token.make_token(user),
-#         "protocol": "https" if request.is_secure() else "http"
-#     })
-#     email = EmailMessage(mail_subject, message, to=[to_email])
-#     if email.send():
-#         message.success(request, f"Thank you <b>{user}</b> for registering!<br> You are almost there to login into GreatKart. <br> Please go to <b>{to_email}</b> inbox and click on received account activation link to confirm and complete the registration. <br> Note: Check your spam folder too!")
-#     else:
-#         message.error(request, f"Problem occured while sending email to {to_email}, check if email is correctly typed.")
+        if is_valid_token:
+            user.is_active = True
+            user.save()
+            return HttpResponse("Thank you for your email confirmation. Now you can login your account!")
+    else:
+        print("Decoded UID:", uidb64)
+        print("User is: None")
 
-
-# def activate(request, uidb64, token):
-#     User = get_user_model()
-#     try:
-#         uid = force_str(urlsafe_base64_decode(uidb64))
-#         user = Customer.objects.get(pk=uid)
-#     except(TypeError, ValueError, OverflowError, User.DoesNotExists):
-#         user= None
-#     if user is not None and account_activation_token.check_token(user, token):
-#         user.is_active = True
-#         user.save()
-
-#         message.success(request, 'Thank you for your email confirmation. Now you can login your account.')
-#         return redirect("login")
-#     else:
-#         message.error(request, "Activation link is invalid")
-#     return redirect("home")
+    return HttpResponse("Activation link is invalid")
 
 def login_page(request):
     if request.method == "POST":
@@ -108,10 +87,12 @@ def login_page(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             user = authenticate(request, username=email, password=password)
-
-            if user:
-                login(request, user)
-                return redirect("home")
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return redirect("/")
+                else:
+                    form.add_error(None, "Please activate your account from the email sent to you.")
             else:
                 form.add_error(None, "Invalid email or password")
     else:
@@ -119,7 +100,19 @@ def login_page(request):
 
     return render(request, "accounts/signin.html", {"form": form})
 
-        
 def logout_page(request):
     logout(request)
     return redirect("/")
+
+@login_required
+def edit_profile(request):
+    user = request.user
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('product:home')
+    else:
+        form = ProfileForm(instance=user)
+
+    return render(request, 'accounts/edit_profile.html', {'form': form})

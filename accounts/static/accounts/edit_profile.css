@@ -1,0 +1,50 @@
+/* Centering the form */
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+/* Card style */
+.profile-form-card {
+    width: 400px;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form heading */
+.profile-form-card h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Input styling */
+.profile-form-card input[type="text"],
+.profile-form-card input[type="email"],
+.profile-form-card textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Submit button */
+.profile-form-card button {
+    width: 100%;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.profile-form-card button:hover {
+    background-color: #0c5cd5;
+}

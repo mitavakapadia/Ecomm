@@ -1,7 +1,6 @@
 <!DOCTYPE HTML>
 {% load static %}
 <html lang="en">
-<head>
 <meta charset="utf-8">
 <meta http-equiv="pragma" content="no-cache" />
 <meta http-equiv="cache-control" content="max-age=604800" />
@@ -27,7 +26,7 @@
 <link href="{% static 'product/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
 
 <!-- custom javascript -->
-<script src="{% static 'product/js/script.js'%}" type="text/javascript"></script>
+<script src="{% static 'product/js/script.js' %}" type="text/javascript"></script>
 
 <script type="text/javascript">
 /// some script
@@ -81,7 +80,7 @@ $(document).ready(function() {
 	<div class="container">
 <div class="row align-items-center">
 	<div class="col-lg-2 col-md-3 col-6">
-		<a href="./" class="brand-wrap">
+		<a href="{% url 'product:home' %}" class="brand-wrap">
 			<img class="logo" src="{% static 'product/images/logo.png' %}">
 		</a> <!-- brand-wrap.// -->
 	</div>
@@ -92,7 +91,7 @@ $(document).ready(function() {
 			</button>
 			<div class="dropdown-menu">
                 {% for category in categories %}
-                    <a class="dropdown-item" href="{% url 'product_list_by_category' category.slug %}">{{ category.name }}</a>
+                    <a class="dropdown-item" href="{% url 'product:product_list_by_category' category.slug %}">{{ category.name }}</a>
                 {% endfor %}
 				
 			</div>
@@ -100,7 +99,7 @@ $(document).ready(function() {
 	</div> <!-- col.// -->
 	{% comment %} <a href="./store.html" class="btn btn-outline-primary">Store</a> {% endcomment %}
 	<div class="col-lg  col-md-6 col-sm-12 col">
-		<form action="{% url 'search' %}" method="get" class="search">
+		<form action="{% url 'product:search' %}" method="get" class="search">
 			<div class="input-group w-100">
 			    <input type="text" class="form-control" style="width:60%;" placeholder="Search Products" name="search">
 			    
@@ -228,14 +227,14 @@ $(document).ready(function() {
 	</header>
 
 	<article class="box mb-3">
-		<div class="icontext w-100">
+		{% comment %} <div class="icontext w-100">
 			<img src="" class="img-xs icon rounded-circle">
 			<div class="text">
 				<span class="date text-muted float-md-right">24.04.2020 </span>  
 				<h6 class="mb-1">Mike John </h6>
 				
 			</div>
-		</div> <!-- icontext.// -->
+		</div> <!-- icontext.// --> {% endcomment %}
 		<div class="mt-3">
 			<p>
 				{{ product.review }}

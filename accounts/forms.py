@@ -4,6 +4,11 @@ from django.contrib.auth.models import User
 from .models import Customer
 from django import forms
 
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['name', 'email', 'phone', 'address']
+
 class RegistrationForm(UserCreationForm):
     name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'})

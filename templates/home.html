@@ -1,3 +1,4 @@
+{% block header %}
 <!DOCTYPE HTML>
 {% load static %}
 <html lang="en">
@@ -41,11 +42,14 @@ $(document).ready(function() {
 </script>
 
 </head>
+{% endblock header %}
+
+{% block navbar %}
 <body>
 
 
 <header class="section-header">
-<nav class="navbar p-md-0 navbar-expand-sm navbar-light border-bottom">
+{% comment %} <nav class="navbar p-md-0 navbar-expand-sm navbar-light border-bottom">
 <div class="container">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTop4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -66,7 +70,7 @@ $(document).ready(function() {
 	</ul> <!-- list-inline //  -->
   </div> <!-- navbar-collapse .// -->
 </div> <!-- container //  -->
-</nav>
+</nav> {% endcomment %}
 
 <section class="header-main border-bottom">
 	<div class="container">
@@ -83,7 +87,7 @@ $(document).ready(function() {
 			</button>
 			<div class="dropdown-menu">
                 {% for category in categories %}
-                    <a class="dropdown-item" href="{% url 'product_list_by_category' category.slug %}">{{ category.name }}</a>
+                    <a class="dropdown-item" href="{% url 'product:product_list_by_category' category.slug %}">{{ category.name }}</a>
                 {% endfor %}
 				
 			</div>
@@ -91,7 +95,7 @@ $(document).ready(function() {
 	</div> <!-- col.// -->
 	{% comment %} <a href="./store.html" class="btn btn-outline-primary">Store</a> {% endcomment %}
 	<div class="col-lg  col-md-6 col-sm-12 col">
-		<form action="{% url 'search' %}" method="get" class="search">
+		<form action="{% url 'product:search' %}" method="get" class="search">
 			<div class="input-group w-100">
 			    <input type="text" class="form-control" style="width:60%;" placeholder="Search Products" name="search">
 			    
@@ -107,7 +111,7 @@ $(document).ready(function() {
 				<div class="d-flex justify-content-end mb-3 mb-lg-0">
 					<div class="widget-header">
                         {% if user.is_authenticated %}
-                            <small class="title text-muted">Welcome {{ user.name }}!</small>
+                            <small class="title text-muted">Welcome <a href="{% url 'accounts:edit-profile' %}">{{ user.name }}!</a> </small>
                             <div>
                                 <a href="{% url 'accounts:logout' %}">Logout</a>
                             </div>
@@ -135,7 +139,27 @@ $(document).ready(function() {
 </header> <!-- section-header.// -->
 
 
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Sort By</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'product:high-to-low' %}">Price- High to Low</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'product:low-to-high' %}">Price- Low to High</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'product:popularity' %}">Popularity</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'product:newest' %}">Newest</a>
+    </li>
+</ul>
+{% endblock navbar %}
+
 <!-- ========================= SECTION MAIN ========================= -->
+{% block content %}
 <section class="section-intro padding-y-sm">
 <div class="container">
 
@@ -161,9 +185,9 @@ $(document).ready(function() {
 
 	<div class="col-md-3">
 		<div class="card card-product-grid">
-			<a href="{% url 'product-detail' product.slug %}" class="img-wrap"> <img src="{{ product.prod_img.url }}"> </a>
+			<a href="{% url 'product:product-detail' product.slug %}" class="img-wrap"> <img src="{{ product.prod_img.url }}"> </a>
 			<figcaption class="info-wrap">
-				<a href="{% url 'product-detail' product.slug %}" class="title">{{ product.prod_name }}</a>
+				<a href="{% url 'product:product-detail' product.slug %}" class="title">{{ product.prod_name }}</a>
 				<div class="price mt-1">Rs. {{ product.price }} </div> <!-- price-wrap.// -->
 			</figcaption>
 		</div>
@@ -173,23 +197,24 @@ $(document).ready(function() {
 </div> <!-- row.// -->
 </div> <!-- container // -->
 </section>
-
+{% endblock content %}
 <!-- ========================= SECTION  END// ========================= -->
 
 
 
 
 <!-- ========================= FOOTER ========================= -->
+{% block footer %}
 <footer class="section-footer border-top">
 	<div class="container">
 		<section class="footer-bottom border-top row">
 			<div class="col-md-2">
-				<p class="text-muted"> &copy 2019 Company name </p>
+				<p class="text-muted"> &copy 2025 GreatKart </p>
 			</div>
 			<div class="col-md-8 text-md-center">
-				<span  class="px-2">info@pixsellz.io</span>
-				<span  class="px-2">+879-332-9375</span>
-				<span  class="px-2">Street name 123, Avanue abc</span>
+				<span  class="px-2">info@greatkart.com</span>
+				<span  class="px-2">+91 8793329375</span>
+				<span  class="px-2">24, Bandra Complex, Mumbai</span>
 			</div>
 			<div class="col-md-2 text-md-right text-muted">
 				<i class="fab fa-lg fa-cc-visa"></i>
@@ -199,6 +224,7 @@ $(document).ready(function() {
 		</section>
 	</div><!-- //container -->
 </footer>
+{% endblock footer %}
 <!-- ========================= FOOTER END // ========================= -->
 
 </body>

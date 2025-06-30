@@ -159,7 +159,7 @@ EMAIL_HOST_PASSWORD = "vgechlotswhxupzi"
 ACCOUNT_EMAIL_VERIFICATION = "none"
 EMAIL_FROM = 'mitava.kapadia@ecosmob.com'
 
-PASSWORD_RESET_TIMEOUT = 900 #15 min
+PASSWORD_RESET_TIMEOUT = 259200 #3 days
 
 # Login Redirect
 LOGIN_REDIRECT_URL = "/"
