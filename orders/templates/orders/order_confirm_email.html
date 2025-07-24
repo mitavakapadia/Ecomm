@@ -1,0 +1,7 @@
+{% autoescape off %}
+    {% for item_info in order_items %}
+        Your order {{item_info.id}} has been placed successfully. 
+        You ordered {{item_info.product.prod_name}} for Quantity of 
+        {{item_info.quantity}}. Grand Total of your Order is ₹ {{final_price}}
+    {% endfor %}
+{% endautoescape %}

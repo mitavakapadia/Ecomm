@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalid Activation</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5 text-center">
+        <div class="card shadow p-4 mx-auto" style="max-width: 500px;">
+            <h2 class="mt-3 text-danger">Invalid Activation Link</h2>
+            <p>This activation link is invalid or has expired.</p>
+            <a href="{% url 'product:home' %}" class="btn btn-secondary mt-3">Return Home</a>
+        </div>
+    </div>
+</body>
+</html>

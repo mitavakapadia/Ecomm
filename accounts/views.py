@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth import get_user_model
@@ -13,8 +13,9 @@ from .tokens import account_activation_token
 
 from django.contrib.auth.forms import AuthenticationForm
 from . import forms
-from .forms import RegistrationForm, LoginForm, ProfileForm
-from .models import Customer
+from .forms import RegistrationForm, LoginForm, ProfileForm, DeliveryAddressForm
+from .models import Customer, DeliveryAddress
+from product.models import Product, Category
 
 # Create your views here.
 
@@ -44,10 +45,10 @@ def register(request):
                 "uid": uid,
                 "token": token,
             })
-            # to_email = form.cleaned_data.get("email")
             email = EmailMessage(mail_subject, message, to=[user.email])
             email.send()
-            return HttpResponse("Please proceed confirm your email address to complete the registration")
+            context = {"user":user}
+            return render(request, "accounts/activation_sent.html", context)
         else:
             print(form.errors)
     else:
@@ -73,19 +74,19 @@ def activate(request, uidb64, token):
         if is_valid_token:
             user.is_active = True
             user.save()
-            return HttpResponse("Thank you for your email confirmation. Now you can login your account!")
+            return render(request, "accounts/activation_success.html", {"user": User.objects.get(pk=uid)})
     else:
         print("Decoded UID:", uidb64)
         print("User is: None")
 
-    return HttpResponse("Activation link is invalid")
+        return render(request, "accounts/activation_invalid.html")
 
 def login_page(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+            email = form.cleaned_data["email"]
+            password = form.cleaned_data["password"]
             user = authenticate(request, username=email, password=password)
             if user is not None:
                 if user.is_active:
@@ -107,12 +108,72 @@ def logout_page(request):
 @login_required
 def edit_profile(request):
     user = request.user
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ProfileForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('product:home')
+            return redirect("product:home")
     else:
         form = ProfileForm(instance=user)
 
-    return render(request, 'accounts/edit_profile.html', {'form': form})
+    return render(request, "accounts/edit_profile.html", {"form": form})
+
+@login_required
+def manage_addresses(request):
+    addresses = DeliveryAddress.objects.filter(customer=request.user)
+    categories = Category.objects.all()
+    form = DeliveryAddressForm()
+
+    if request.method == "POST":
+        form = DeliveryAddressForm(request.POST)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.customer = request.user
+            if address.is_default:
+                DeliveryAddress.objects.filter(customer=request.user, is_default=True).update(is_default=False)
+            address.save()
+            return redirect("accounts:addresses")
+
+    return render(request, "accounts/addresses.html", {
+        "addresses": addresses, 
+        "form": form, 
+        "categories":categories})
+
+@login_required
+def edit_address(request, address_id):
+    address = get_object_or_404(DeliveryAddress, id=address_id, customer=request.user)
+    if request.method == "POST":
+        form = DeliveryAddressForm(request.POST, instance=address)
+        if form.is_valid():
+            updated_address = form.save(commit=False)
+            if updated_address.is_default:
+                DeliveryAddress.objects.filter(customer=request.user, is_default=True).exclude(id=address_id).update(is_default=False)
+            updated_address.save()
+            return redirect("accounts:addresses")
+    else:
+        form = DeliveryAddressForm(instance=address)
+    return render(request, "accounts/addresses.html", {
+        "form": form, 
+        "is_editing": True, 
+        "address_id": address.id,
+        "addresses": DeliveryAddress.objects.filter(customer=request.user)
+        })
+
+@login_required
+def delete_address(request, address_id):
+    address = get_object_or_404(DeliveryAddress, id=address_id, customer=request.user)
+    address.delete()
+    return redirect("accounts:addresses")
+
+def dashboard(request):
+    categories = Category.objects.all()
+    user = request.user
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect("product:home")
+    else:
+        form = ProfileForm(instance=user)
+    context = {"categories":categories, "form":form}
+    return render(request, "accounts/dashboard.html", context)

@@ -1,0 +1,237 @@
+{% block header %}
+<!DOCTYPE HTML>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="max-age=604800" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>GreatKart | One of the Biggest Online Shopping Platform</title>
+
+<link href="{% static 'product/images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
+
+<!-- jQuery -->
+<script src="{% static 'product/js/jquery-2.0.0.min.js' %}" type="text/javascript"></script>
+
+<!-- Bootstrap4 files-->
+<script src="{% static 'product/js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
+<link href="{% static 'product/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
+
+<!-- Font awesome 5 -->
+<link href="{% static 'product/fonts/all.min.css' %}" type="text/css" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+<!-- custom style -->
+<link href="{% static 'product/ui.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'product/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+
+<!-- custom javascript -->
+<script src="{% static 'product/js/script.js' %}" type="text/javascript"></script>
+
+<script type="text/javascript">
+/// some script
+
+// jquery ready start
+$(document).ready(function() {
+	// jQuery code
+
+}); 
+// jquery end
+</script>
+
+</head>
+{% endblock header %}
+
+{% block navbar %}
+<body>
+
+
+<header class="section-header">
+
+
+<section class="header-main border-bottom">
+	<div class="container">
+<div class="row align-items-center">
+	<div class="col-lg-2 col-md-3 col-6">
+		<a href="./" class="brand-wrap">
+			<img class="logo" src="{% static 'product/images/logo.png' %}">
+		</a> <!-- brand-wrap.// -->
+	</div>
+	<div class="col-lg col-sm col-md col-6 flex-grow-0">
+		<div class="category-wrap dropdown d-inline-block float-right">
+			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> 
+				<i class="fa fa-bars"></i> All category 
+			</button>
+			<div class="dropdown-menu">
+                {% for category in categories %}
+                    <a class="dropdown-item" href="{% url 'product:product_list_by_category' category.slug %}">{{ category.name }}</a>
+                {% endfor %}
+				
+			</div>
+		</div>  <!-- category-wrap.// -->
+	</div> <!-- col.// -->
+	<div class="col-lg  col-md-6 col-sm-12 col">
+		<form action="{% url 'product:search' %}" method="get" class="search">
+			<div class="input-group w-100">
+			    <input type="text" class="form-control" style="width:60%;" placeholder="Search Products" name="search">
+			    
+			    <div class="input-group-append">
+			      <button class="btn btn-primary" type="submit">
+			        <i class="fa fa-search"></i>
+			      </button>
+			    </div>
+		    </div>
+		</form> <!-- search-wrap .end// -->
+	</div> <!-- col.// -->
+	<div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
+				<div class="d-flex justify-content-end mb-3 mb-lg-0">
+					<div class="widget-header">
+                        {% if user.is_authenticated %}
+                            <small class="title text-muted">Welcome <a href="{% url 'accounts:dashboard' %}">{{ user.name }}!</a> </small>
+                            <div>
+                                <a href="{% url 'accounts:logout' %}">Logout</a>
+                            </div>
+                        {% else %}
+						<small class="title text-muted">Welcome guest!</small>
+						<div> 
+							<a href="{% url 'accounts:login' %}">Login</a> <span class="dark-transp"> | </span>
+							<a href="{% url 'accounts:register' %}"> Register</a>
+						</div>
+                        {% endif %}
+					</div>
+					<a href="{% url 'cart:cart-detail' %}" class="widget-header pl-3 ml-3">
+						<div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
+					</a>
+				</div> <!-- widgets-wrap.// -->
+			</div> <!-- col.// -->
+</div> <!-- row.// -->
+	</div> <!-- container.// -->
+</section> <!-- header-main .// -->
+
+
+{% endblock %}
+</header> <!-- section-header.// -->
+<section class="section-content padding-y bg">
+<div class="container">
+
+
+
+<!-- ============================ COMPONENT 2 ================================= -->
+{% if message %}
+  <div class="alert alert-warning text-center">
+    {{ message }}
+  </div>
+{% endif %}
+
+<div class="row">
+		<main class="col-md-8">
+
+<article class="card mb-4">
+<div class="card-body">
+	<h4 class="card-title mb-4">Order Summary</h4>
+	<div class="row">
+		{% for item in cart_items %}
+		<div class="col-md-6">
+			<figure class="itemside  mb-4">
+				<div class="aside"><img src="{{ item.product.prod_img.url }}" class="border img-sm"></div>
+				<figcaption class="info">
+					<a href="{% url 'product:product-detail' item.product.slug %}">{{ item.product.prod_name }} </a> <br>
+					<span class="text-muted">{{ item.quantity}}x = ₹ {{ item.final_price|floatformat:2 }} </span>
+				</figcaption>
+			</figure>
+		</div> <!-- col.// -->
+		{% endfor %}
+			</div> <!-- row.// -->
+</div> <!-- card-body.// -->
+</article> <!-- card.// -->
+
+<article class="card mb-4">
+<div class="card-body">
+	<h4 class="card-title mb-4">Contact Information</h4>
+	<form action="">
+		<div class="row">
+                        <div>
+                            <b> Name: </b>{{ customer.name }} <br>
+                            <b> Email: </b>{{ customer.email }} <br>
+                            <b> Phone: </b>{{ customer.phone }} <br>
+                        </div>
+		</div>
+	</form>
+</div> <!-- card-body.// -->
+</article> <!-- card.// -->
+
+<article class="card mb-4">
+<div class="card-body">
+	<h4 class="card-title mb-4">Delivery Address</h4>
+	<a href="{% url 'accounts:addresses' %}">
+	<button type="button" class="btn btn-primary">Add Address</button>
+	</a>
+	<div id="accordion">
+		<div class="card">
+	</div>
+</div>
+			<form method="POST" action="{% url 'orders:order-confirmation' order.id %}">
+			{% csrf_token %} 
+			{% for address in addresses %}
+                    <div class="border rounded p-3 mb-3 d-flex justify-content-between align-items-start">
+                        <div>
+							<div class="form-check">
+							<input class="form-check-input" type="radio" name="selected_address" value="{{ address.id }}" required>
+								{{ address.street }}<br>
+								{{ address.city }}, {{ address.state }} <br>
+								{{ address.pincode }}<br>
+								{{ address.country }}<br>
+								{% if address.is_default %}
+									<span class="badge badge-primary">Default Address</span>
+								{% endif %}
+							</div>
+                        </div>
+					</div>
+			{% endfor %}
+		</label>
+</div> <!-- card-body.// -->
+</article> <!-- card.// -->
+		
+		</main> <!-- col.// -->
+		<aside class="col-md-4">
+			<div class="card">
+		<div class="card-body">
+			<dl class="dlist-align">
+			  <dt>Total price:</dt>
+			  <dd class="text-right">₹ {{ total_price|floatformat:2 }}</dd>
+			</dl>
+			<dl class="dlist-align">
+			  <dt>Discount:</dt>
+			  <dd class="text-right">₹ {{ discount|floatformat:2 }}</dd>
+			</dl>
+			<dl class="dlist-align">
+			  <dt>Total:</dt>
+			  <dd class="text-right text-dark b"><strong>₹ {{ final_price|floatformat:2 }}</strong></dd>
+			</dl>
+			<hr>
+			<p class="text-center mb-3">
+			</p>
+			<a href="{% url 'orders:order-confirmation' order.id %}">
+			<button type="submit" class="btn btn-primary btn-block"> Place Order </button>
+			</a>
+		</div> <!-- card-body.// -->
+		</div> <!-- card.// -->
+		</aside> <!-- col.// -->
+	</div> <!-- row.// -->
+	</form>
+
+<!-- ============================ COMPONENT 2 END//  ================================= -->
+
+
+
+
+</div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+
+<!-- ========================= SECTION CONTENT END// ========================= -->
+</body>
+</html>

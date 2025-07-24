@@ -1,49 +1,45 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Customer
+from .models import Customer, DeliveryAddress
 from django import forms
 
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['name', 'email', 'phone', 'address']
+        fields = ["name", "email", "phone"]
 
 class RegistrationForm(UserCreationForm):
     name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={"class": "form-control"})
     )
     phone = forms.CharField(
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'maxlength': '10',
-            'pattern': '[0-9]*',
-            'inputmode': 'numeric',
-            'placeholder': 'Enter 10-digit phone number'
+            "class": "form-control",
+            "maxlength": "10",
+            "pattern": "[0-9]*",
+            "inputmode": "numeric",
+            "placeholder": "Enter 10-digit phone number"
         })
-    )
-    address = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control'})
     )
     password1 = forms.CharField(
         label="Password",
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
         strip=False,
     )
     password2 = forms.CharField(
         label="Password confirmation",
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
         strip=False,
     )
 
     class Meta:
         model = Customer
-        fields = ["email", "name", "phone", "address"]
+        fields = ["email", "name", "phone"]
         widgets = {
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'address': forms.Textarea(attrs={'class': 'form-control'}),
+            "email": forms.EmailInput(attrs={"class": "form-control"}),
+            "name": forms.TextInput(attrs={"class": "form-control"}),
+            "phone": forms.TextInput(attrs={"class": "form-control"}),
         }
 
     def clean_password2(self):
@@ -61,5 +57,11 @@ class RegistrationForm(UserCreationForm):
         return user
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-control"}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"class": "form-control"}))
+
+
+class DeliveryAddressForm(forms.ModelForm):
+    class Meta:
+        model = DeliveryAddress
+        fields = ["street", "city", "state", "pincode", "country", "is_default"]

@@ -37,10 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'store',
     'accounts',
     'product',
-    'cart'
+    'cart',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -94,6 +94,9 @@ DATABASES = {
         'PASSWORD': 'Root@123',
         'HOST':'localhost',
         'PORT':'3306',
+        'OPTIONS': {
+         "init_command": "SET foreign_key_checks = 0;",
+    },
     }
 }
 
@@ -149,7 +152,6 @@ MEDIA_URL = "/files/"
 
 # For Email Configuration
 
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
@@ -165,5 +167,7 @@ PASSWORD_RESET_TIMEOUT = 259200 #3 days
 LOGIN_REDIRECT_URL = "/"
 
 CART_SESSION_ID = 'cart'
+SESSION_COOKIE_AGE = 3600 # 1 hour
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 AUTH_USER_MODEL = "accounts.Customer"

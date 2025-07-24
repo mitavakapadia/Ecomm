@@ -1,3 +1,8 @@
+html{
+    font-family: var(--bs-font-sans-serif)
+}
+
+
 /* Centering the form */
 .profile-container {
     display: flex;
@@ -8,8 +13,8 @@
 
 /* Card style */
 .profile-form-card {
-    width: 400px;
-    padding: 30px;
+    width: 700px;
+    padding: 55px;
     border: 1px solid #ddd;
     border-radius: 10px;
     background-color: #fff;

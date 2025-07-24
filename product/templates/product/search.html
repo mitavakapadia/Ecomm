@@ -44,29 +44,6 @@ $(document).ready(function() {
 
 
 <header class="section-header">
-<nav class="navbar p-md-0 navbar-expand-sm navbar-light border-bottom">
-<div class="container">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTop4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarTop4">
-    <ul class="navbar-nav mr-auto">
-    	<li class="nav-item dropdown">
-		 	<a href="#" class="nav-link">   English </a>
-		    
-		</li>
-		<li class="nav-item dropdown">
-			<a href="#" class="nav-link"> USD </a>
-		</li>
-    </ul>
-    <ul class="navbar-nav">
-		<li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>
-		<li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>
-	</ul> <!-- list-inline //  -->
-  </div> <!-- navbar-collapse .// -->
-</div> <!-- container //  -->
-</nav>
-
 <section class="header-main border-bottom">
 	<div class="container">
 <div class="row align-items-center">
@@ -88,7 +65,6 @@ $(document).ready(function() {
 			</div>
 		</div>  <!-- category-wrap.// -->
 	</div> <!-- col.// -->
-	{% comment %} <a href="./store.html" class="btn btn-outline-primary">Store</a> {% endcomment %}
 	<div class="col-lg  col-md-6 col-sm-12 col">
 		<form action="{% url 'product:search' %}" method="get" class="search">
 			<div class="input-group w-100">
@@ -113,7 +89,6 @@ $(document).ready(function() {
 					</div>
 					<a href="product/cart.html" class="widget-header pl-3 ml-3">
 						<div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
-						<span class="badge badge-pill badge-danger notify">0</span>
 					</a>
 				</div> <!-- widgets-wrap.// -->
 			</div> <!-- col.// -->
@@ -131,7 +106,6 @@ $(document).ready(function() {
 	<h2 class="title-page">Search Result(s)</h2>
 </div> <!-- container //  -->
 </section>
-
 <div class="row">
     {% for product in products %}
 	<div class="col-md-4">
@@ -146,10 +120,9 @@ $(document).ready(function() {
 					<a href="{% url 'product:product-detail' product.slug %}" class="title">{{ product.prod_name }}</a>
 					<div class="price-wrap mt-2">
 						<span class="price">Rs. {{ product.price }}</span>
-						{% comment %} <del class="price-old">$1980</del> {% endcomment %}
 					</div> <!-- price-wrap.// -->
 				</div>
-				<a href="#" class="btn btn-block btn-primary">Add to cart </a>
+				<a href="{% url 'cart:cart-add' product.id %}" class="btn btn-block btn-primary">Add to cart </a>
 			</figcaption>
 		</figure>
 	</div> <!-- col.// -->

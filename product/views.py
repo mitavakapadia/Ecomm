@@ -20,31 +20,35 @@ def product_detail(request, slug):
     categories = Category.objects.all()
     cart_product_form = CartAddProductForm()
     related_products = Product.objects.filter(
-        category=product.category).exclude(id=product.id).order_by('?')[:4]
+    category=product.category).exclude(id=product.id).order_by('?')[:4]
+    low_stock = False
+    
+    if product.stock < 25:
+        low_stock = True
+
     return render(request, "product/product_detail.html", {
         "product":product, 
         "related_products":related_products,
         "categories":categories,
-        "cart_product_form":cart_product_form
+        "cart_product_form":cart_product_form,
+        "low_stock": low_stock
     })
 
 def search(request):
     query = request.GET.get("search")
     products = Product.objects.all()
     categories = Category.objects.all()
-    print(query)
     if query:
         products = products.filter(Q(prod_name__icontains=query))
+    else:
+        return render(request, "product/search.html")
 
     return render(request, "product/search.html", {
         "query": query, 
         "products":products,
-        "categories": categories
+        "categories": categories,
     })
 
-# if query is None:
-    # return redirect("home")
-# else:
 def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()

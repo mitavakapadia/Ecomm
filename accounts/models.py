@@ -15,8 +15,12 @@ class CustomerManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault('name', 'Admin')
+        extra_fields.setdefault('phone', '0000000000')
+        extra_fields.setdefault('address', 'Admin Address')
+        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
     
 class Customer(AbstractBaseUser, PermissionsMixin):
@@ -26,12 +30,25 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     address = models.TextField(max_length=250)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = CustomerManager() 
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["name", "phone", "address"]
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email
+    
+class DeliveryAddress(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    pincode = models.IntegerField(max_length=6)
+    country = models.CharField(max_length=100)
+    is_default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.street}, {self.city}"
